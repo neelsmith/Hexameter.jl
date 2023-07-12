@@ -4,14 +4,14 @@
 #
 # Serve docs from repository root:
 #
-#   julia -e 'using LiveServer; serve(dir="docs/build")'julia -e 'using LiveServer; serve(dir="docs/build")' 
+#   julia -e 'using LiveServer; serve(dir="docs/build")' 
 #
 using Pkg
 Pkg.activate(".")
 Pkg.instantiate()
 
 
-using Documenter, DocStringExtensions, CitableCorpus
+using Documenter, DocStringExtensions, Hexameter
 
 makedocs(
     sitename = "Hexameter.jl",
@@ -24,5 +24,5 @@ makedocs(
 
 
 deploydocs(
-    repo = "github.com/cite-architecture/CitableCorpus.jl.git",
+    repo = "github.com/neelsmith/Hexameter.jl.git",
 ) 

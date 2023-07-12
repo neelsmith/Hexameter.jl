@@ -1,0 +1,6 @@
+LONG = 2
+SHORT = 1
+CORREPTION = 0
+
+
+
