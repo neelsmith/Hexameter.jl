@@ -1,7 +1,8 @@
 # API documentation
 
-Public API : TBA
-
+```@docs
+stichos
+```
 
 ## Internal functions
 
