@@ -9,10 +9,13 @@ Public API : TBA
 ```@docs
 Hexameter.hexameterconss
 Hexameter.isconsonant
-``````
+```
 
 ### Working with syllables
 
 ```@docs
 Hexameter.openingcons
+Hexameter.closingcons
+Hexameter.isopen
+Hexameter.scoresyllables
 ```
