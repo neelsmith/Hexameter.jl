@@ -7,4 +7,7 @@
     @test Hexameter.isconsonant("ς")
     @test Hexameter.isconsonant("α") == false
 
+
+    @test Hexameter.hasdoublecons("ἐξ")
+
 end

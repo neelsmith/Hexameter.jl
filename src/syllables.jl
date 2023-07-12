@@ -14,6 +14,24 @@ function shortvowel(s; ortho = literaryGreek())
     occursin(vowel, PolytonicGreek.LG_SHORTVOWELS)
 end
 
+"""True if string `s` includes a double consonant
+(ζ, ξ, ψ).
+$(SIGNATURES)
+# Examples
+```jldoctest
+julia> hasdoublecons("ἐξ")
+true
+```
+"""
+function hasdoublecons(s)
+    withdouble = false
+    for c in ["ζ", "ξ", "ψ"]
+        if occursin(c, s)
+           withdouble = true
+        end
+    end
+    withdouble 
+end
 
 """Count number of opening consonants in string `s`.
 $(SIGNATURES)
@@ -40,7 +58,7 @@ function openingcons(s)
             done = true
         end
     end
-    conscount
+    hasdoublecons(s) ? conscount + 1 : conscount
 end
 
 
@@ -69,7 +87,7 @@ function closingcons(s)
         end
         i = i - 1
     end
-    conscount
+    hasdoublecons(s) ? conscount + 1 : conscount
 end
 
 

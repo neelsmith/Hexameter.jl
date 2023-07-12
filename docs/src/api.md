@@ -10,6 +10,7 @@ stichos
 ```@docs
 Hexameter.hexameterconss
 Hexameter.isconsonant
+Hexameter.hasdoublecons
 ```
 
 ### Working with syllables
