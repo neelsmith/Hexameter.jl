@@ -3,6 +3,7 @@
 $(SIGNATURES)
 """
 function stichos(s; ortho = literaryGreek())
+    @info("HEY: PARSE $(s)")
     syllables = syllabify(s,ortho)
     lastfoot = syllables[end-1:end]
     scores = scoresyllables(syllables[1:end-2], ortho = ortho)
@@ -21,9 +22,12 @@ function popfoot(quantsv, textv, solutions = [], inprogress = "", ftcount = 1)
     currsolutions = solutions
     currline = inprogress
 
-    @debug("From ", join(textv,","), currline, currsolutions)
+    @info("From ", join(textv,","), currline, currsolutions)
+    @info("Size of quantsv ", length(quantsv))
     if isempty(quantsv)
-        if length(split(currline), "|") == 6
+        @info("FINISHED: look at ", currline, textv[1])
+        if length(split(currline), "|") == 6 && (! shortvowel(textv[1]))
+            @info("SYLL 1", text[1])
             @info("SUCCESS", solutions)
             push!(currsolutions, currline)
         else

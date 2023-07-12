@@ -17,27 +17,28 @@ function scoresyllables(v; ortho = literaryGreek())
         conscount = i < length(v) ? closingcons(syll) + openingcons(v[i + 1]) : closingcons(syll)
         
         if liquidcluster(syll)
-            push!(optionsmap, [LONG, SHORT])
+            push!(optionsmap, [Hexameter.LONG, Hexameter.SHORT])
 
-        elseif conscount == 0 
+        elseif conscount == 0
+            # Test that following syll starts with long
             if PolytonicGreek.longsyllable(syll, ortho)
-                push!(optionsmap, [LONG, SYNIZESIS])
+                push!(optionsmap, [Hexameter.LONG, Hexameter.SYNIZESIS])
             else
-                push!(optionsmap, [LONG, SHORT, SYNIZESIS])
+                push!(optionsmap, [Hexameter.LONG, Hexameter.SHORT])
             end
 
         elseif conscount > 1
-            push!(optionsmap, [LONG] )
+            push!(optionsmap, [Hexameter.LONG] )
 
         elseif conscount == 1 && shortvowel(syll, ortho = ortho)
-            push!(optionsmap, [SHORT])
+            push!(optionsmap, [Hexameter.SHORT])
 
         elseif PolytonicGreek.longsyllable(syll, ortho)
-            push!(optionsmap, [LONG])
+            push!(optionsmap, [Hexameter.LONG])
 
         else
             
-            push!(optionsmap, [LONG, SHORT])
+            push!(optionsmap, [Hexameter.LONG, Hexameter.SHORT])
         end
         
     end
