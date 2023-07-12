@@ -3,13 +3,19 @@
 $(SIGNATURES)
 """
 function stichos(s; ortho = literaryGreek())
-    
     syllables = syllabify(s,ortho)
     lastfoot = syllables[end-1:end]
     scores = scoresyllables(syllables[1:end-2], ortho = ortho)
     popfoot(scores, syllables) .* string("|", join(lastfoot, "-"))
 end
 
+"""Recusively pop one metrical foot of syllables from two parallel 
+vectors of equal length: `textv`, the vector of syllables for a hexameter, and `quantsv`, the vector of scores for each syllable.
+$(SIGNATURES)
+
+Returns a string formatted in convention of pipe character separating feet,
+hyphens separating syllables.
+"""
 function popfoot(quantsv, textv, solutions = [], inprogress = "", ftcount = 1)
     # Return value for final set of solutions:
     currsolutions = solutions

@@ -1,4 +1,18 @@
-
+"""True is vowel in syllable `s` can only be short.
+$(SIGNATURES)
+NB: Currently this function only works with the `LiteraryGreekOrthography`
+implementation of `GreekOrthography`.
+# Examples
+```jldoctest
+julia> shortvowel("δὲ")
+true
+```
+"""
+function shortvowel(s; ortho = literaryGreek())
+    noacc = rmaccents(s, ortho)
+    vowel = PolytonicGreek.vowelsonly(noacc, ortho)
+    occursin(vowel, PolytonicGreek.LG_SHORTVOWELS)
+end
 
 """Count number of opening consonants in string `s`.
 $(SIGNATURES)

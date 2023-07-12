@@ -6,18 +6,13 @@ end
 
 @testset "Test scoring possible metrical values" begin
     syllables = syllabify("μῆνιν", literaryGreek())
-    Hexameter.scoresyllables(syllables)
+    expectedscores = [[Hexameter.LONG], [Hexameter.LONG, Hexameter.SHORT]]
+    actualscores = Hexameter.scoresyllables(syllables)
+    @test actualscores == expectedscores
 end
 
-#=lnpart = "μῆνιν"
-"μῆνιν"
-
-julia> syllabify(lnpart, literaryGreek()) |> Hexameter.scoresyllables
-┌ Warning: liquidcluster: NOT YET IMPLEMENTED.
-└ @ Hexameter ~/Desktop/Hexameter.jl/src/syllables.jl:77
-┌ Warning: liquidcluster: NOT YET IMPLEMENTED.
-└ @ Hexameter ~/Desktop/Hexameter.jl/src/syllables.jl:77
-2-element Vector{Any}:
- [2]
- [2, 1]
-=#
+@testset "Test identifying length of vowels and metrical length of syllables" begin
+    
+    @test Hexameter.shortvowel("δὲ")
+    @test Hexameter.shortvowel("δή") == false
+end

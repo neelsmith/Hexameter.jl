@@ -18,5 +18,11 @@ Hexameter.isconsonant
 Hexameter.openingcons
 Hexameter.closingcons
 Hexameter.isopen
+Hexameter.shortvowel
 Hexameter.scoresyllables
+```
+
+### Metrical analysis
+```@docs
+Hexameter.popfoot
 ```
