@@ -3,7 +3,6 @@
 $(SIGNATURES)
 """
 function stichos(s; ortho = literaryGreek())
-    @info("HEY: PARSE $(s)")
     syllables = syllabify(s,ortho)
     lastfoot = syllables[end-1:end]
     scores = scoresyllables(syllables[1:end-2], ortho = ortho)
@@ -46,11 +45,23 @@ function popfoot(quantsv, textv, solutions = [], inprogress = "", ftcount = 1)
                 tval = join([inprogress, join(textv[1:2],"-")], "|")
                 @debug(tval)
                 currline = tval
-                @debug("Recurse with", currline, currsolutions)
+             
+         
+                
+
+
                if length(quantsv)== 2
                     push!(currsolutions, currline)
                else
-                    popfoot(quantsv[3:end], textv[3:end], currsolutions, currline, ftcount + 1)
+
+                    # Peek ahead: avoid breaking into foot if next syll
+                    # has to be short. 
+                    if shortvowel(textv[3])
+                        @info("FAIL: this would cause next foot to start with short syllable $(textv[3])")
+                    else
+                        @debug("Recurse with", currline, currsolutions)
+                        popfoot(quantsv[3:end], textv[3:end], currsolutions, currline, ftcount + 1)
+                    end
                end
             end
         end

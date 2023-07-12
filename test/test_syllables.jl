@@ -14,7 +14,7 @@ end
 
     # context aware: allow for synizesis when next syllable
     # starts with a vowel
-    sylls = syllabify("ἡρώων, αὐτοὺς δὲ ἑλώρια τεῦχε κύνεσσιν", literaryGreek())
+    sylls = syllabify("ἡρώων αὐτοὺς δὲ ἑλώρια τεῦχε κύνεσσιν", literaryGreek())
     scores = Hexameter.scoresyllables(sylls)
     @test (sylls[1], scores[1]) == ( "ἡ", [Hexameter.LONG])
     @test (sylls[2], scores[2]) == ( "ρω", [Hexameter.LONG, Hexameter.SYNIZESIS])
