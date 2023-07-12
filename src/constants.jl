@@ -1,5 +1,6 @@
 LONG = 2
 SHORT = 1
+SYNIZESIS = 1
 CORREPTION = 0
 
 

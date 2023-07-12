@@ -14,6 +14,7 @@ function shortvowel(s; ortho = literaryGreek())
     occursin(vowel, PolytonicGreek.LG_SHORTVOWELS)
 end
 
+
 """Count number of opening consonants in string `s`.
 $(SIGNATURES)
 # Examples
@@ -93,7 +94,7 @@ function liquidcluster(s)
 end
 
 
-"""Determine possible metrical valiue for each syllable in a Vector of string values, `v`. Possible values for each syllable are returned as a Vector of one or more of `LONG`, `SHORT`, and `CORREPTION`.
+"""Determine possible metrical valiue for each syllable in a Vector of string values, `v`. Possible values for each syllable are returned as a Vector of one or more of `LONG`, `SHORT`, and `SYNIZESIS`.
 $(SIGNATURES)
 # Examples
 ```jldoctest
@@ -113,19 +114,24 @@ function scoresyllables(v; ortho = literaryGreek())
         if liquidcluster(syll)
             push!(optionsmap, [LONG, SHORT])
 
+        elseif conscount == 0 
+            if PolytonicGreek.longsyllable(syll, ortho)
+                push!(optionsmap, [LONG, SYNIZESIS])
+            else
+                push!(optionsmap, [LONG, SHORT, SYNIZESIS])
+            end
+
         elseif conscount > 1
             push!(optionsmap, [LONG] )
 
-        elseif conscount == 0 
-            if PolytonicGreek.longsyllable(syll, ortho)
-                push!(optionsmap, [LONG, CORREPTION])
-            else
-                push!(optionsmap, [LONG, SHORT, CORREPTION])
-            end
+        elseif conscount == 1 && shortvowel(syll, ortho = ortho)
+            push!(optionsmap, [SHORT])
 
         elseif PolytonicGreek.longsyllable(syll, ortho)
             push!(optionsmap, [LONG])
+
         else
+            
             push!(optionsmap, [LONG, SHORT])
         end
         
