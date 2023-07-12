@@ -20,8 +20,10 @@ function scoresyllables(v; ortho = literaryGreek())
             push!(optionsmap, [Hexameter.LONG, Hexameter.SHORT])
 
         elseif conscount == 0
+            
             # Test that following syll starts with long
             if PolytonicGreek.longsyllable(syll, ortho)
+                
                 push!(optionsmap, [Hexameter.LONG, Hexameter.SYNIZESIS])
             else
                 push!(optionsmap, [Hexameter.LONG, Hexameter.SHORT])
