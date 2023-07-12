@@ -15,9 +15,13 @@ function scoresyllables(v; ortho = literaryGreek())
         syll = string(s)
         # total consonants at end of this syllable and beginning of next:
         conscount = i < length(v) ? closingcons(syll) + openingcons(v[i + 1]) : closingcons(syll)
-        
+        vowels = replace(PolytonicGreek.vowelsonly(s, ortho), r"[ʼ']" => "")
+        @debug("Scoring on vowels $(vowels)")
         if liquidcluster(syll)
             push!(optionsmap, [Hexameter.LONG, Hexameter.SHORT])
+
+        elseif isempty(vowels)
+            push!(optionsmap, [Hexameter.ELISION])
 
         elseif conscount == 0
             

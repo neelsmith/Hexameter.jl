@@ -4,77 +4,81 @@ $(SIGNATURES)
 """
 function stichos(s; ortho = literaryGreek())
     syllables = syllabify(s,ortho)
-    lastfoot = syllables[end-1:end]
-    scores = scoresyllables(syllables[1:end-2], ortho = ortho)
-    popfoot(scores, syllables) .* string("|", join(lastfoot, "-"))
+    scores = scoresyllables(syllables, ortho = ortho)
+    popfoot(scores, syllables)# .* string("|", join(lastfoot, "-"))
 end
 
 """Recusively pop one metrical foot of syllables from two parallel 
-vectors of equal length: `textv`, the vector of syllables for a hexameter, and `quantsv`, the vector of scores for each syllable.
+vectors: `textv`, the vector of syllables for a hexameter, and `quantsv`, the vector of scores for each syllable.
 $(SIGNATURES)
 
 Returns a string formatted in convention of pipe character separating feet,
 hyphens separating syllables.
 """
-function popfoot(quantsv, textv, solutions = [], inprogress = "", ftcount = 1)
+function popfoot(quantsv, textv, solutions = [], inprogress = "", ftcount = 0)
     # Return value for final set of solutions:
     currsolutions = solutions
     currline = inprogress
 
-    @info("From ", join(textv,","), currline, currsolutions)
-    @info("Size of quantsv ", length(quantsv))
+    @debug("From ", currline, length(quantsv), join(textv,","))
     if isempty(quantsv)
-        @info("FINISHED: look at ", currline, textv[1])
-        if length(split(currline), "|") == 6 && (! shortvowel(textv[1]))
-            @info("SYLL 1", text[1])
-            @info("SUCCESS", solutions)
-            push!(currsolutions, currline)
-        else
-            @info("Wrong number of feet in $(currline)")
-        end
-    
+        #done
 
-    elseif length(quantsv) == 1
-        @debug("FAILED ", textv, currline)
-        []
+    elseif length(quantsv) == 1 
+        @info("FAILED: widowed syllable at ", quantsv, textv, currline)
+        
+
+    elseif length(quantsv) == 2
+        @info("Adding final two syllables withouth checking: $(textv[end-1:end]) attached to $(currline)")
+        push!(currsolutions, currline * "|" * join(textv[end-1:end], "-") * "|")
+
+    
 
     else # more to analyze
         @debug("Len quantsv", length(quantsv))
         for (i,j) in Iterators.product([2], quantsv[2])
                if i + j == 4
-                tval = join([inprogress, join(textv[1:2],"-")], "|")
+                tval = join([currline, join(textv[1:2],"-")], "|")
                 @debug(tval)
                 currline = tval
-             
-         
-                
-
-
-               if length(quantsv)== 2
-                    push!(currsolutions, currline)
-               else
-
-                    # Peek ahead: avoid breaking into foot if next syll
-                    # has to be short. 
-                    if shortvowel(textv[3])
-                        @info("FAIL: this would cause next foot to start with short syllable $(textv[3])")
-                    else
-                        @debug("Recurse with", currline, currsolutions)
+        
+               
+                # Peek ahead: avoid breaking into foot if next syll
+                # has to be short. 
+                if shortvowel(textv[3])
+                    @info("FAIL: this would cause next foot to start with short syllable $(textv[3]) at $(currline)")
+                elseif (ftcount + 1) < 6
+                    @debug("CHECK FOOTCOUNT BEFORE RECURSION: $(ftcount + 1)")
+                    @info("Recurse popping 2 (spondee) with", currline, currsolutions)
+                    # CHECK QUANT OF FIRST SYLL
+                    if Hexameter.LONG in quantsv[1]
                         popfoot(quantsv[3:end], textv[3:end], currsolutions, currline, ftcount + 1)
+                    else
+                        @info("FAIL: this would start a foot with a short at $(currline)")
                     end
-               end
+                end        
             end
         end
         if length(quantsv) > 2
             for (i,j,k) in Iterators.product([2], quantsv[2], quantsv[3])
                 if sum([i,j,k]) == 4
                     currline = join([inprogress, join(textv[1:3],"-")], "|")
-                    @debug("Recurse with", inprogress, solutions)
-                    if length(quantsv) == 3
-                        push!(currsolutions, currline)
-                    else
-                        popfoot(quantsv[4:end], textv[4:end], currsolutions, currline, ftcount + 1)
-                    end
+                    if (ftcount + 1) < 6
+                        @debug("CHECK FOOTCOUNT BEFORE RECURSION: $(ftcount + 1)")
+                       
+          
+                        
+                        # CHECK QUANT OF FIRST SYLL
+                        @debug("CHECK QUANT OF FIRST SYLL $(quantsv[1]) for $(textv[1])")
+                        @debug("at $(currline)")
+                        if Hexameter.LONG in quantsv[1]
+                            @info("Recurse popping 3 (dactyl or 0 syllable) with", currline, solutions)
+                            popfoot(quantsv[4:end], textv[4:end], currsolutions, currline, ftcount + 1)
+                        else
+                            @info("FAIL: this would start a foot with a short at $(currline) ")
+                        end
+                   
+                end
                 end
             end
         end
