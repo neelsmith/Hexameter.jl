@@ -16,35 +16,56 @@ function scoresyllables(v; ortho = literaryGreek())
         # total consonants at end of this syllable and beginning of next:
         conscount = i < length(v) ? closingcons(syll) + openingcons(v[i + 1]) : closingcons(syll)
         vowels = replace(PolytonicGreek.vowelsonly(s, ortho), r"[ʼ']" => "")
+        nextvowels = i < length(v) ? openingcons(v[i+1]) == 0 :  false
         @debug("Scoring on vowels $(vowels)")
         if liquidcluster(syll)
             push!(optionsmap, [Hexameter.LONG, Hexameter.SHORT])
 
         elseif isempty(vowels)
+            @info("Pushing elided syllable $(s)")
             push!(optionsmap, [Hexameter.ELISION])
 
-        elseif conscount == 0
-            
+        elseif conscount == 0   
             # Test that following syll starts with long
             if PolytonicGreek.longsyllable(syll, ortho)
-                
                 push!(optionsmap, [Hexameter.LONG, Hexameter.SYNIZESIS])
+
+            elseif shortvowel(syll, ortho = ortho)
+                if nextvowels 
+                    push!(optionsmap, [Hexameter.SHORT, Hexameter.CORREPTION])
+                else
+                    push!(optionsmap, [Hexameter.SHORT])
+                end
             else
-                push!(optionsmap, [Hexameter.LONG, Hexameter.SHORT])
+                if nextvowels 
+                    push!(optionsmap, [Hexameter.LONG, Hexameter.SHORT, Hexameter.CORREPTION])
+                else
+                    push!(optionsmap, [Hexameter.LONG, Hexameter.SHORT])
+                end
             end
 
-        elseif conscount > 1
-            push!(optionsmap, [Hexameter.LONG] )
+       
 
         elseif conscount == 1 && shortvowel(syll, ortho = ortho)
-            push!(optionsmap, [Hexameter.SHORT])
+            if nextvowels 
+                push!(optionsmap, [Hexameter.SHORT, Hexameter.CORREPTION])
+            else
+                push!(optionsmap, [Hexameter.SHORT])
+            end
+            
+        elseif conscount > 1
+            push!(optionsmap, [Hexameter.LONG] )
 
         elseif PolytonicGreek.longsyllable(syll, ortho)
             push!(optionsmap, [Hexameter.LONG])
 
         else
-            
-            push!(optionsmap, [Hexameter.LONG, Hexameter.SHORT])
+            if nextvowels 
+                push!(optionsmap, [Hexameter.LONG, Hexameter.SHORT, Hexameter.CORREPTION])
+            else
+                push!(optionsmap, [Hexameter.LONG, Hexameter.SHORT])
+            end
+      
         end
         
     end

@@ -18,30 +18,33 @@ hyphens separating syllables.
 function popfoot(quantsv, textv, solutions = [], inprogress = "", ftcount = 0)
     # Return value for final set of solutions:
     currsolutions = solutions
-    currline = inprogress
+    currline = ""
 
     # Within this if, every branch must either fail,
     # recurse, or return a final vlue
     @info("From footcount $(ftcount)", currline, length(quantsv), join(textv,","))
-    if isempty(quantsv)
-        #done
+    
+    if ftcount == 6 && isempty(quantsv)
+        @info("At 6 feet: $(inprogress)")
+        currline = inprogress
 
     elseif length(quantsv) == 1 
-        @debug("FAILED: widowed syllable at ", quantsv, textv, currline)
+        @info("FAILED: widowed syllable at ", quantsv, textv, currline)
        
     elseif length(quantsv) == 2
-        @debug("Adding final two syllables withouth checking: $(textv[end-1:end]) attached to $(currline)")
-        push!(currsolutions, currline * "|" * join(textv[end-1:end], "-") * "|")
-   
-    #elseif length(quantsv) == 3
-     #   @debug("FAILED: last foot must be long+anceps so can't pop a foot when 3 syllables are left ", quantsv, textv, currline)
-      
-    elseif (ftcount + 1) < 6
+        currline = inprogress * "|" * join(textv[end-1:end], "-") * "|"
+        currsolutions = solutions
+        @info("Adding final two syllables withouth checking: $(textv[end-1:end]) attached to $(currline)")
+        push!(currsolutions, currline)
+        popfoot([], [], currsolutions, currline, ftcount + 1)
+        
+    elseif ftcount < 6
         # More to process
         nxt2 = popn(quantsv, textv, 2)
-        @info("Popped 2: ", nxt2)
+        @debug("Popped 2: ", nxt2)
         if ! isempty(nxt2)
             currline = join([inprogress, join(textv[1:2],"-")], "|")
+            currsolutions = solutions
             @info("Recurse popping 2 (spondee) with", currline, solutions)
             popfoot(quantsv[3:end], textv[3:end], currsolutions, currline, ftcount + 1)
         end
@@ -50,6 +53,7 @@ function popfoot(quantsv, textv, solutions = [], inprogress = "", ftcount = 0)
             nxt3 = popn(quantsv, textv, 3)
             if ! isempty(nxt3)
                 currline = join([inprogress, join(textv[1:3],"-")], "|")
+                currsolutions = solutions
                 @info("Recurse popping 3 (dactyl or spondee with elision) with", currline, solutions)
                 popfoot(quantsv[4:end], textv[4:end], currsolutions, currline, ftcount + 1)
             end
@@ -59,14 +63,16 @@ function popfoot(quantsv, textv, solutions = [], inprogress = "", ftcount = 0)
             nxt4 = popn(quantsv, textv, 4)
             if ! isempty(nxt4)
                 currline = join([inprogress, join(textv[1:4],"-")], "|")
+                currsolutions = solutions
                 @info("Recurse popping 4 (dactyl with elision) with", currline, solutions)
                 popfoot(quantsv[5:end], textv[5:end], currsolutions, currline, ftcount + 1)
             end
         end 
     else # we've reached 6 feet!
         @debug("Returning", currsolutions |> unique)
-        return currsolutions |> unique
+        currsolutions = unique(solutions)
     end
+    currsolutions
 end
 
 """Remove next `n` syllables if metrically allowed.
@@ -86,16 +92,21 @@ function popn(quantsv, textv, n)
     @debug("Iterate product ", itts)
     for args in Iterators.product(loopargs...)
         
-        if sum(args) == 4
-            @info("Look at " , textv[1:n])
+        if sum(args) == 4 && length(quantsv) > n
+            @info("With n=$(n), got sum of 4 with $(args): $(textv[1:n])")
+            opens_long =  Hexameter.LONG in quantsv[1]
+            next_long = Hexameter.LONG in quantsv[n+1]
+    
             # Tests to apply:
-            if shortvowel(textv[n+1])
+            if ! next_long #shortvowel(textv[n+1])
                 @info("FAIL: this would cause next foot to start with short syllable $(textv[n+1])")
-            elseif ! shortsyllable(textv[1]) #Hexameter.LONG in quantsv[1]
+            elseif ! opens_long
+                @info("FAIL: this would start foot with short syllable $(textv[1])")
+               
+            else
                 @info("SAVING $(textv[1:n])")
                 poppable = textv[1:n]
-            else
-                @info("FAIL: this would start foot with short syllable $(textv[1])")
+               
             end
         end
     end
