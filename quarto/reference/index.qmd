@@ -1,8 +1,23 @@
+---
+engine: julia
+---
+
+# Reference
+
 # API documentation
 
-```@docs
-stichos
+
+`stichos`
+```{julia}
+#| echo: false
+#| warning: false
+using PolytonicGreek
+@doc stichos
 ```
+
+:::{.callout-note appearance="minimal"}
+
+:::
 
 ## Internal functions
 

@@ -12,5 +12,6 @@ include("characters.jl")
 include("syllables.jl")
 include("scoring.jl")
 include("stichos.jl")
+include("papachitzos.jl")
 
 end # module Hexameter
