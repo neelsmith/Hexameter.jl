@@ -4,6 +4,8 @@ authors = ["Neel Smith  <dnsmith.neel@gmail.com>"]
 version = "0.1.0"
 
 [deps]
+CitableBase = "d6f014bd-995c-41bd-9893-703339864534"
+CitableCorpus = "cf5ac11a-93ef-4a1a-97a3-f6af101603b5"
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 Orthography = "0b4c9448-09b0-4e78-95ea-3eb3328be36d"
@@ -13,6 +15,8 @@ TestSetExtensions = "98d24dd4-01ad-11ea-1b02-c9a08f80db04"
 Unicode = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 
 [compat]
+CitableBase = "10.4.0"
+CitableCorpus = "0.13.5"
 DocStringExtensions = "0.9.3"
 Documenter = "1"
 Orthography = "0.22"

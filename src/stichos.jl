@@ -1,5 +1,5 @@
 
-"""Parse meter of a single hexameter.
+"""Parse the metrical of a string representing a single hexameter.
 $(SIGNATURES)
 """
 function stichos(s; ortho = literaryGreek())
