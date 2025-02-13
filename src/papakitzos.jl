@@ -4,5 +4,6 @@ $(SIGNATURES)
 """
 function hexameter(s; ortho = literaryGreek())
     syllables = syllabify(s,ortho)
-    @info(length(syllables))
+    #@info(length(syllables))
+    length(syllables)
 end
